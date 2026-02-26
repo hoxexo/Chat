@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Chat</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="chat-container" id="chatContainer" style="display: none;">
+        <div class="chat-header">
+            <div class="header-left">
+                <h2>💬 Real-Time Chat</h2>
+                <span class="online-badge" id="onlineCount">0 online</span>
+            </div>
+            <div class="header-right">
+                <span id="userNameDisplay"></span>
+                <button onclick="logout()" class="logout-btn">Logout</button>
+            </div>
+        </div>
+        
+        <div class="chat-main">
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h3>Online Users</h3>
+                </div>
+                <div class="online-users" id="onlineUsers">
+                    <!-- Online users will be displayed here -->
+                </div>
+            </div>
+            
+            <div class="chat-area">
+                <div class="messages" id="messages">
+                    <!-- Messages will be displayed here -->
+                </div>
+                
+                <div class="typing-indicator" id="typingIndicator"></div>
+                
+                <div class="message-input">
+                    <textarea 
+                        id="messageInput" 
+                        placeholder="Type your message..."
+                        rows="1"
+                    ></textarea>
+                    <button onclick="sendMessage()" id="sendBtn">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
