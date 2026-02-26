@@ -4,51 +4,529 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Real-Time Chat</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+        }
+        
+        #loginPage, #registerPage {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        .auth-container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            width: 350px;
+        }
+        
+        .auth-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #5a67d8;
+        }
+        
+        .auth-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        
+        .auth-link a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .error {
+            color: #e53e3e;
+            font-size: 14px;
+            margin-top: 5px;
+            text-align: center;
+        }
+        
+        #chatPage {
+            display: flex;
+            height: 100vh;
+            background: white;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: #f7fafc;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-info {
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .user-info h3 {
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+        
+        .user-info button {
+            width: auto;
+            padding: 5px 10px;
+            background: #e53e3e;
+            margin-top: 10px;
+        }
+        
+        .online-users {
+            flex: 1;
+            padding: 20px;
+        }
+        
+        .online-users h4 {
+            color: #4a5568;
+            margin-bottom: 15px;
+        }
+        
+        .online-user {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+        }
+        
+        .online-user .dot {
+            width: 10px;
+            height: 10px;
+            background: #48bb78;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            max-width: 70%;
+        }
+        
+        .message.own {
+            margin-left: auto;
+        }
+        
+        .message-content {
+            background: #f7fafc;
+            padding: 10px 15px;
+            border-radius: 10px;
+            position: relative;
+        }
+        
+        .own .message-content {
+            background: #667eea;
+            color: white;
+        }
+        
+        .message-info {
+            font-size: 12px;
+            color: #718096;
+            margin-bottom: 5px;
+        }
+        
+        .own .message-info {
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .message-text {
+            word-wrap: break-word;
+        }
+        
+        .typing-indicator {
+            padding: 10px 20px;
+            color: #718096;
+            font-style: italic;
+            font-size: 14px;
+        }
+        
+        .message-input {
+            padding: 20px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .message-input input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .message-input input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .message-input button {
+            width: 100px;
+            padding: 12px;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 <body>
-    <div class="chat-container" id="chatContainer" style="display: none;">
-        <div class="chat-header">
-            <div class="header-left">
-                <h2>💬 Real-Time Chat</h2>
-                <span class="online-badge" id="onlineCount">0 online</span>
-            </div>
-            <div class="header-right">
-                <span id="userNameDisplay"></span>
-                <button onclick="logout()" class="logout-btn">Logout</button>
-            </div>
-        </div>
-        
-        <div class="chat-main">
-            <div class="sidebar">
-                <div class="sidebar-header">
-                    <h3>Online Users</h3>
+    <!-- Login Page -->
+    <div id="loginPage" class="">
+        <div class="auth-container">
+            <h2>Login to Chat</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <input type="email" id="loginEmail" placeholder="Email" required>
                 </div>
-                <div class="online-users" id="onlineUsers">
-                    <!-- Online users will be displayed here -->
+                <div class="form-group">
+                    <input type="password" id="loginPassword" placeholder="Password" required>
                 </div>
-            </div>
-            
-            <div class="chat-area">
-                <div class="messages" id="messages">
-                    <!-- Messages will be displayed here -->
-                </div>
-                
-                <div class="typing-indicator" id="typingIndicator"></div>
-                
-                <div class="message-input">
-                    <textarea 
-                        id="messageInput" 
-                        placeholder="Type your message..."
-                        rows="1"
-                    ></textarea>
-                    <button onclick="sendMessage()" id="sendBtn">Send</button>
-                </div>
+                <div id="loginError" class="error"></div>
+                <button type="submit">Login</button>
+            </form>
+            <div class="auth-link">
+                Don't have an account? <a href="#" onclick="showRegister()">Register</a>
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-    <script src="script.js"></script>
+    
+    <!-- Register Page -->
+    <div id="registerPage" class="hidden">
+        <div class="auth-container">
+            <h2>Create Account</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <input type="text" id="registerUsername" placeholder="Username" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="registerEmail" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="registerPassword" placeholder="Password" required>
+                </div>
+                <div id="registerError" class="error"></div>
+                <button type="submit">Register</button>
+            </form>
+            <div class="auth-link">
+                Already have an account? <a href="#" onclick="showLogin()">Login</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chat Page -->
+    <div id="chatPage" class="hidden">
+        <div class="sidebar">
+            <div class="user-info">
+                <h3 id="currentUsername"></h3>
+                <p id="currentEmail"></p>
+                <button onclick="logout()">Logout</button>
+            </div>
+            <div class="online-users">
+                <h4>Online Users</h4>
+                <div id="onlineUsersList"></div>
+            </div>
+        </div>
+        
+        <div class="chat-area">
+            <div class="messages" id="messages"></div>
+            <div class="typing-indicator" id="typingIndicator"></div>
+            <div class="message-input">
+                <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        let socket;
+        let currentUser = null;
+        let typingTimeout;
+        
+        // Check if user is logged in
+        const token = localStorage.getItem('token');
+        const userData = localStorage.getItem('user');
+        
+        if (token && userData) {
+            currentUser = JSON.parse(userData);
+            showChat();
+            connectSocket();
+        } else {
+            showLogin();
+        }
+        
+        // Show/Hide Functions
+        function showLogin() {
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('registerPage').classList.add('hidden');
+            document.getElementById('chatPage').classList.add('hidden');
+        }
+        
+        function showRegister() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('registerPage').classList.remove('hidden');
+            document.getElementById('chatPage').classList.add('hidden');
+        }
+        
+        function showChat() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('registerPage').classList.add('hidden');
+            document.getElementById('chatPage').classList.remove('hidden');
+            document.getElementById('currentUsername').textContent = currentUser.username;
+            document.getElementById('currentEmail').textContent = currentUser.email;
+        }
+        
+        // Register Form
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    currentUser = data.user;
+                    showChat();
+                    connectSocket();
+                } else {
+                    document.getElementById('registerError').textContent = data.error;
+                }
+            } catch (error) {
+                document.getElementById('registerError').textContent = 'Registration failed';
+            }
+        });
+        
+        // Login Form
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    currentUser = data.user;
+                    showChat();
+                    connectSocket();
+                } else {
+                    document.getElementById('loginError').textContent = data.error;
+                }
+            } catch (error) {
+                document.getElementById('loginError').textContent = 'Login failed';
+            }
+        });
+        
+        // Socket Connection
+        function connectSocket() {
+            const token = localStorage.getItem('token');
+            socket = io({
+                auth: { token }
+            });
+            
+            socket.on('connect', () => {
+                console.log('Connected to server');
+            });
+            
+            socket.on('connect_error', (error) => {
+                console.log('Connection error:', error.message);
+                if (error.message === 'Authentication error') {
+                    logout();
+                }
+            });
+            
+            socket.on('online-users', (users) => {
+                displayOnlineUsers(users);
+            });
+            
+            socket.on('previous-messages', (messages) => {
+                messages.forEach(msg => displayMessage(msg));
+            });
+            
+            socket.on('new-message', (message) => {
+                displayMessage(message);
+            });
+            
+            socket.on('user-typing', (data) => {
+                if (data.userId !== currentUser.id) {
+                    const indicator = document.getElementById('typingIndicator');
+                    if (data.isTyping) {
+                        indicator.textContent = `${data.username} is typing...`;
+                    } else {
+                        indicator.textContent = '';
+                    }
+                }
+            });
+        }
+        
+        // Display online users
+        function displayOnlineUsers(users) {
+            const list = document.getElementById('onlineUsersList');
+            list.innerHTML = '';
+            users.forEach(user => {
+                if (user.id !== currentUser.id) {
+                    const div = document.createElement('div');
+                    div.className = 'online-user';
+                    div.innerHTML = `
+                        <span class="dot"></span>
+                        <span>${user.username}</span>
+                    `;
+                    list.appendChild(div);
+                }
+            });
+        }
+        
+        // Display message
+        function displayMessage(message) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${message.userId === currentUser.id ? 'own' : ''}`;
+            
+            const time = new Date(message.timestamp).toLocaleTimeString();
+            
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <div class="message-info">
+                        ${message.username} • ${time}
+                    </div>
+                    <div class="message-text">${escapeHtml(message.message)}</div>
+                </div>
+            `;
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        // Send message
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (message && socket) {
+                socket.emit('send-message', message);
+                input.value = '';
+            }
+        }
+        
+        // Typing indicator
+        document.getElementById('messageInput').addEventListener('input', () => {
+            if (socket) {
+                socket.emit('typing', true);
+                
+                clearTimeout(typingTimeout);
+                typingTimeout = setTimeout(() => {
+                    socket.emit('typing', false);
+                }, 1000);
+            }
+        });
+        
+        // Send on Enter
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        // Logout
+        function logout() {
+            if (socket) {
+                socket.disconnect();
+            }
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            currentUser = null;
+            showLogin();
+        }
+        
+        // Escape HTML
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
 </body>
-</html>
+                </html>
